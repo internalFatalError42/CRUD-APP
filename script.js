@@ -1,26 +1,63 @@
 'use strict';
 
+let names = ['Erica Mustermann', 'John Doe'],
+phoneNumbers = ['+49 123 456789', '+49 987 654321'];
+
 const render = function () {
     let content = document.getElementById('content');
-    let element = document.createElement('div');
-    element.innerHTML = '';
-    element.innerHTML = `<h1>My Contacts</h1>`;
-    element.innerHTML += getDateTime();
-    content.appendChild(element);
+    let count = names.length;
+    content.innerHTML = '';
+    content.innerHTML += `<h1>My Contacts</h1>`;
+    content.innerHTML += `
+        <div>
+            <input type="text" id="name" placeholder="Name">
+            <input type="tel" id="phone" placeholder="Telefon">
+            <button id="add">Hinzufügen</button>
+        </div>
+    `;
+
+    for (let i = 0; i < count; i++) {
+        content.innerHTML += `
+            <div class="card">
+                <b>Name: </b> ${names[i]}<br>
+                <b>Telefon: </b> ${phoneNumbers[i]} <br>
+                <button onclick="deleteContact(${i})">Löschen</button> <br>
+            </div>
+        `;
+    }
+
+    document.getElementById('add').onclick = function () {
+        let name = document.getElementById('name').value;
+        let phone = document.getElementById('phone').value;
+        
+        if (name && phone) {
+            names.push(name);
+            phoneNumbers.push(phone);
+
+            render();
+            save();
+        }
+    };
 }
 
-const getDateTime = function () {
-    let date = new Date();
+const deleteContact = function (index) {
+    names.splice(index, 1);
+    phoneNumbers.splice(index, 1);
 
-    let day = String(date.getDate()).padStart(2, '0');
-    let month = String(date.getMonth() + 1).padStart(2, '0'); // January is 0!
-    let year = date.getFullYear();
+    render();
+    save();
+}
 
-    let hours = String(date.getHours()).padStart(2, '0');
-    let minutes = String(date.getMinutes()).padStart(2, '0');
-    let seconds = String(date.getSeconds()).padStart(2, '0');
+const save = function () {
+    let nameAsText = JSON.stringify(names);
+    let phoneAsText = JSON.stringify(phoneNumbers);
+    localStorage.setItem('names', nameAsText);
+    localStorage.setItem('phones', phoneAsText);
+};
 
-    let dateTime = `<b>${day}.${month}.${year} ${hours}:${minutes}:${seconds}</b>`;
-
-    return dateTime;
+const load = function () {
+    let nameAsText = localStorage.getItem('names');
+    let phoneAsText = localStorage.getItem('phones');
+    names = JSON.parse(nameAsText);
+    phoneNumbers = JSON.parse(phoneAsText);
 }
