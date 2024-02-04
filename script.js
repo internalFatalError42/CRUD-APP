@@ -1,11 +1,13 @@
 'use strict';
 
+
 let names = ['Erica Mustermann', 'John Doe'],
-phoneNumbers = ['+49 123 456789', '+49 987 654321'];
+    phoneNumbers = ['+49 123 456789', '+49 987 654321'];
+
 
 const render = function () {
     let content = document.getElementById('content');
-    let count = names.length;
+    let count = names?.length;
     content.innerHTML = '';
     content.innerHTML += `<h1>My Contacts</h1>`;
     content.innerHTML += `
@@ -17,7 +19,7 @@ const render = function () {
     `;
 
     for (let i = 0; i < count; i++) {
-        content.innerHTML += `
+        content.innerHTML += /*html*/ `
             <div class="card">
                 <b>Name: </b> ${names[i]}<br>
                 <b>Telefon: </b> ${phoneNumbers[i]} <br>
@@ -40,6 +42,7 @@ const render = function () {
     };
 }
 
+
 const deleteContact = function (index) {
     names.splice(index, 1);
     phoneNumbers.splice(index, 1);
@@ -48,16 +51,24 @@ const deleteContact = function (index) {
     save();
 }
 
+
 const save = function () {
     let nameAsText = JSON.stringify(names);
     let phoneAsText = JSON.stringify(phoneNumbers);
+
     localStorage.setItem('names', nameAsText);
-    localStorage.setItem('phones', phoneAsText);
+    localStorage.setItem('phones', phoneAsText);  
 };
+
 
 const load = function () {
     let nameAsText = localStorage.getItem('names');
     let phoneAsText = localStorage.getItem('phones');
-    names = JSON.parse(nameAsText);
-    phoneNumbers = JSON.parse(phoneAsText);
+
+    if (nameAsText && phoneAsText) {
+        names = JSON.parse(nameAsText);
+        phoneNumbers = JSON.parse(phoneAsText);
+    }
 }
+
+load();
